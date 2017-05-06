@@ -1,0 +1,172 @@
+package shinobi.arch.read_it.User;
+
+import java.util.ArrayList;
+
+import shinobi.arch.read_it.Post.Post;
+
+/**
+ * User Class
+ * Representation of a User
+ * Created by architgupta on 4/18/17.
+ */
+
+public class User {
+    private String userName;
+    private ArrayList<Post> myPosts;
+    private String emailID;
+    private int upVotes;
+    private int downVotes;
+    private int karma;
+
+    /**
+     * Add a new POST to your posts
+     *
+     * @param newPost POST, user's new Post
+     */
+    public void addPost(Post newPost) {
+        for (Post currentPost : myPosts) {
+            if (currentPost.equals(newPost)) {
+                return;
+            }
+        }
+        myPosts.add(newPost);
+    }
+
+    /**
+     * remove a Post from your posts
+     * @param delPost POST, the post to be deleted
+     */
+    public void removePost(Post delPost) {
+        for (Post currentPost : myPosts) {
+            if (currentPost.equals(delPost)) {
+                myPosts.remove(currentPost);
+            }
+        }
+        return;
+    }
+
+
+    /**
+     * As soon as someone upvotes your POST
+     * increment general upvote count and karma
+     */
+    public void upVote() {
+        this.karma++;
+        this.upVotes++;
+    }
+
+    /**
+     * As soon as someone downvotes your POST
+     * decrement general downvote count and karma
+     */
+    public void downVote() {
+        this.karma--;
+        this.downVotes++;
+    }
+
+    public void removeUpVote() {
+        if (upVotes > 0) {
+            upVotes--;
+        }
+    }
+
+    public void removeDownVote() {
+        if (downVotes > 0) {
+            downVotes--;
+        }
+    }
+
+    /**
+     * Update a POST in the user's myPosts whenever an update to a POST written by the user is made
+     *
+     * @param oldPost Post, the old POST to search and replace
+     * @param newPost Post, the new-updated POST
+     */
+    public void updatePost(Post oldPost, Post newPost) {
+        for (int i = 0; i < myPosts.size(); i++) {
+            if (myPosts.get(i).equals(oldPost)) {
+                myPosts.set(i, newPost);
+            }
+        }
+    }
+
+    /**
+     * @param userName
+     * @param emailID
+     */
+    public User(String userName, String emailID) {
+        this.userName = userName;
+        this.myPosts = new ArrayList<>();
+        this.emailID = emailID;
+        this.upVotes = 0;
+        this.downVotes = 0;
+        this.karma = 0;
+    }
+
+    /**
+     * Getters, Setters, Equals, HashCode (Machine Generated)
+     */
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public ArrayList<Post> getMyPosts() {
+        return myPosts;
+    }
+
+    public int getUpVotes() {
+        return upVotes;
+    }
+
+    public int getDownVotes() {
+        return downVotes;
+    }
+
+    public int getKarma() {
+        return karma;
+    }
+
+    public String getEmailID() {
+        return emailID;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setMyPosts(ArrayList<Post> myPosts) {
+        this.myPosts = myPosts;
+    }
+
+    public void setEmailID(String emailID) {
+        this.emailID = emailID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (upVotes != user.upVotes) return false;
+        if (downVotes != user.downVotes) return false;
+        if (karma != user.karma) return false;
+        if (!userName.equals(user.userName)) return false;
+        if (!myPosts.equals(user.myPosts)) return false;
+        return emailID.equals(user.emailID);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userName.hashCode();
+        result = 31 * result + myPosts.hashCode();
+        result = 31 * result + emailID.hashCode();
+        result = 31 * result + upVotes;
+        result = 31 * result + downVotes;
+        result = 31 * result + karma;
+        return result;
+    }
+}

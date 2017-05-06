@@ -1,0 +1,32 @@
+package shinobi.arch.read_it.ResourceClasses;
+
+import com.google.firebase.database.GenericTypeIndicator;
+
+import java.util.ArrayList;
+import java.util.Map;
+
+import shinobi.arch.read_it.Post.Post;
+import shinobi.arch.read_it.User.Password;
+import shinobi.arch.read_it.User.User;
+
+/**
+ * HELPER CLASS TO HOLD ALL THE CONSTANT VALUES
+ * Created by architgupta on 4/30/17.
+ */
+
+public class Helper {
+    public static final String POSTS = "Posts";
+    public static final String USERS = "Users";
+    public static final String AUTHENTICATION = "Auth";
+    public static final String CURRENT_USER = "curr_user";
+    public static final GenericTypeIndicator<ArrayList<Post>> POST_LIST_TYPE = new GenericTypeIndicator<ArrayList<Post>>() {
+    };
+    public static final GenericTypeIndicator<Map<String, User>> USERNAME_USER_MAP = new GenericTypeIndicator<Map<String, User>>() {
+    };
+    public static final GenericTypeIndicator<Map<User, Password>> USER_PASS_MAP = new GenericTypeIndicator<Map<User, Password>>() {
+    };
+
+    public static final String INVALID_PASSWORD = "Invalid Password";
+    public static final String INVALID_EMAIL = "Invalid Email";
+    public static final String WELCOME_MSG = "Welcome to Read-It %s";
+}

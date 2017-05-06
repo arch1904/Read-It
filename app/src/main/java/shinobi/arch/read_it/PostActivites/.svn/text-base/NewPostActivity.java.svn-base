@@ -1,0 +1,138 @@
+package shinobi.arch.read_it.PostActivites;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+
+import com.cloudinary.Cloudinary;
+import com.squareup.picasso.Picasso;
+
+import shinobi.arch.read_it.BaseActivity;
+import shinobi.arch.read_it.Post.Post;
+import shinobi.arch.read_it.R;
+import shinobi.arch.read_it.User.User;
+
+public class NewPostActivity extends BaseActivity {
+    private EditText title;
+    private EditText content;
+    private ImageView imageView;
+    private Button publishButton;
+    private Button cancelButton;
+    private Cloudinary cloudinary;
+    private User currentUser;
+    private static int SELECT_PICTURE = 1;
+    private String imgPath;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_new_post);
+        init();
+
+        /**
+         * On Click Listener for The Publish Button
+         * Checks Validity of the User's Post and then Publishes it
+         */
+        publishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isValidPost()) {
+                    return;
+                }
+                Post newPost = new Post(title.getText().toString(), currentUser, imgPath);
+                allPosts.add(newPost);
+                currentUser.addPost(newPost);
+                Intent postIntent = new Intent(v.getContext(), PostsActivity.class);
+                v.getContext().startActivity(postIntent);
+            }
+        });
+
+        /**
+         * Checks for Tap on the Image View by the user to alter the Image
+         */
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+            }
+        });
+
+        /**
+         * On Click Listener for Cancel Button that goes back to the Posts Page
+         */
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent postIntent = new Intent(v.getContext(), PostsActivity.class);
+                v.getContext().startActivity(postIntent);
+            }
+        });
+
+
+    }
+
+    /**
+     * Initialize all View Attributes
+     */
+    public void init() {
+        setWindowParams();
+        ref.addValueEventListener(valueEventListener);
+        title = (EditText) findViewById(R.id.newTitleTextView);
+        content = (EditText) findViewById(R.id.newContentTextView);
+        imageView = (ImageView) findViewById(R.id.newImageView);
+        publishButton = (Button) findViewById(R.id.publishButton);
+        cancelButton = (Button) findViewById(R.id.cancelButton);
+        imgPath = "";
+    }
+
+    /**
+     * Get Result for Image Intent and get the resultant URI
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+
+                Picasso.with(this).load(data.getData()).noPlaceholder().centerCrop().fit()
+                        .into(imageView);
+            }
+
+        }
+        Uri selectedImageURI = data.getData();
+        imgPath = selectedImageURI.getPath();
+    }
+
+    /**
+     * Check if the Post Data Entered by the User is valid
+     *
+     * @return True, if Valid post, False Otherwise
+     */
+    public boolean isValidPost() {
+        if (title.getText().toString().length() == 0) {
+            return false;
+        }
+        if (content.getText().toString().length() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Set Window Parameters for Floating Window
+     */
+    public void setWindowParams() {
+        WindowManager.LayoutParams wlp = getWindow().getAttributes();
+        wlp.dimAmount = 0;
+        wlp.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+        getWindow().setAttributes(wlp);
+    }
+}
